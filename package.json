@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "asn1.js": "^5.0.1",
+    "des.js": "^1.0.0",
+    "elliptic": "^6.4.1",
+    "lodash.clonedeep": "^4.5.0"
+  }
+}
