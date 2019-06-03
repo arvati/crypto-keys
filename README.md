@@ -1,5 +1,8 @@
 # Crypto-keys
-Javascript Tool to encrypt and decrypt PEM / DER keys
+ > Node Module for Cryptographic Key Utilities in JavaScript'
+
+Node Javascript Tool to encrypt and decrypt PEM / DER keys.
+Fork of [js-crypto-key-utils](https://www.npmjs.com/package/js-crypto-key-utils) to work only with node.js,  with less dependencies and not available for Octet-Formatted Key.
 
 ## Usage
 Supported key types are PEM/DER.   
@@ -10,4 +13,8 @@ Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447)  for the detailed
 
 
 ## License
-Licensed under the MIT license, see `LICENSE` file.
+Licensed under the MIT license, see `LICENSE.md` file.
+
+# Credits
+This fork is totally based on work published by [junkurihara](https://github.com/junkurihara) at [js-crypto-key-utils](https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-key-utils)
+

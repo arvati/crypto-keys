@@ -5,11 +5,10 @@ const crypto = require('crypto');
 const Ec = require('elliptic').ec;
 const cloneDeep = require('lodash.clonedeep');
 
-module.exports = Key;
+// https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-key-utils
 class Key {
-    constructor(format, key, options={}){
+    constructor(format, key){
         const localKey = cloneDeep(key);
-        const localOpt = cloneDeep(options);
         this._jwk = {};
         this._der = null;
         this._current = { jwk: false, der: false};
@@ -102,7 +101,7 @@ class Key {
     get keyType(){
         if(this._isEncrypted) throw new Error('DecryptionRequired');
         return new Promise( async (resolve, reject) => {
-          const jwkey = await this.export('jwk').catch( (e) => {reject(e);});
+          const jwkey = await this.export('jwk').catch( e => {throw e});
           resolve(jwkey.kty);
         });
     }
@@ -114,7 +113,6 @@ class Key {
     get der(){ return this.export('der'); }
     get pem(){ return this.export('pem'); }
     get jwk(){ return this.export('jwk'); }
-
 }
 const getJwkType = (jwkey) => {
     if(jwkey.kty === 'EC'){
@@ -422,13 +420,14 @@ const RSAPrivateKey = asn.define('RSAPrivateKey', function(){
       this.key('otherPrimeInfos').optional().use(OtherPrimeInfos)
     );
 });
-const OneAsymmetricKey = asn.define('OneAsymmetricKey', function () {
+const OtherPrimeInfos = asn.define('OtherPrimeInfos', function(){
+    this.seqof(OtherPrimeInfo);
+});
+const OtherPrimeInfo = asn.define('OtherPrimeInfo', function(){
     this.seq().obj(
-      this.key('version').use(Version),
-      this.key('privateKeyAlgorithm').use(AlgorithmIdentifier),
-      this.key('privateKey').octstr(),
-      this.key('attributes').implicit(0).optional().any(),
-      this.key('publicKey').implicit(1).optional().bitstr()
+        this.key('prime').int(),
+        this.key('exponent').int(),
+        this.key('coefficient').int()
     );
 });
 const Version = asn.define('Version', function () {
@@ -537,6 +536,7 @@ const asn1rsa_toJwk = (decoded, type) => {
 const asn1ec_toJWK = (decoded, type) => {
     if (type === 'public'){ // SPKI
       decoded.algorithm.parameters = ECParameters.decode(decoded.algorithm.parameters, 'der'); // overwrite nested binary object as parsed object
+      const octPubKey = new Uint8Array(decoded.subjectPublicKey.data); // convert oct key to jwk
       const namedCurves = getAlgorithmFromOid(decoded.algorithm.parameters.value, params.namedCurves);
       if(namedCurves.length < 1) throw new Error('UnsupportedCurve');
       return octKeyToJwk(octPubKey, namedCurves[0], {outputPublic: true});
@@ -810,7 +810,7 @@ const decryptPBES2 = async (decoded, passphrase) => {
     }
     else if (eS.algorithm === 'aes128-cbc' || eS.algorithm === 'aes192-cbc'|| eS.algorithm === 'aes256-cbc'){
       const iv = new Uint8Array(eS.parameters);
-      out = Buffer.from( await jscaes.decrypt(
+      out = Buffer.from( await jscaes_decrypt(
         new Uint8Array(decoded.encryptedData), key, {name: 'AES-CBC', iv}
       ));
     } else throw new Error('UnsupportedEncryptionAlgorithm');
@@ -1059,6 +1059,11 @@ const assertPbkdf = (p, s, c, dkLen, hash) => {
     if (Object.keys(pbkdf_hashes).indexOf(hash) < 0) throw new Error('UnsupportedHashAlgorithm');
     return true;
 };
+const nwbo = (num, len) => {
+    const arr = new Uint8Array(len);
+    for(let i=0; i<len; i++) arr[i] = 0xFF && (num >> ((len - i - 1)*8));
+    return arr;
+};
 const jschmac_hashes = {
     'SHA-256': {nodeName: 'sha256', hashSize: 32, blockSize: 64},
     'SHA-384': {nodeName: 'sha384', hashSize: 48, blockSize: 128},
@@ -1094,24 +1099,113 @@ const jscaes_encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData=ne
     const nodeCrypto = await getNodeCrypto(); // node crypto
     let data;
     try{
-    data = nodeapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto);
+    data = nodeapi_encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto);
     } catch(e) {
     throw new Error(`FailedToEncryptNode: ${e.message}`);
     }
     return data;
 };
+const jscaes_decrypt = async (data, key, {name='AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}) => {
+    // assertion and sanitizing
+    if(!(data instanceof Uint8Array) || !(key instanceof Uint8Array)) throw new Error('InvalidArguments');
+    assertAlgorithms({name, iv, tagLength});
+    if(jscaes_ciphers[name].tagLength && !tagLength) tagLength = jscaes_ciphers[name].tagLength;
+    const nodeCrypto = await getNodeCrypto(); // node crypto
+    let msg;
+    try{
+    msg = nodeapi_decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto);
+    } catch(e) {
+    throw new Error(`FailedToDecryptNode: ${e.message}`);
+    }
+    return msg;
+};
 const assertAlgorithms = ({name, iv, tagLength}) => {
-    if(Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedAlgorithm');
-    if(params.ciphers[name].ivLength){
+    if(Object.keys(jscaes_ciphers).indexOf(name) < 0) throw new Error('UnsupportedAlgorithm');
+    if(jscaes_ciphers[name].ivLength){
       if(!(iv instanceof Uint8Array)) throw new Error('InvalidArguments');
       if(iv.byteLength < 2 || iv.byteLength > 16) throw new Error('InvalidIVLength');
-      if(params.ciphers[name].staticIvLength && (params.ciphers[name].ivLength !== iv.byteLength)) throw new Error('InvalidIVLength');
+      if(jscaes_ciphers[name].staticIvLength && (jscaes_ciphers[name].ivLength !== iv.byteLength)) throw new Error('InvalidIVLength');
     }
-    if(params.ciphers[name].tagLength && tagLength){
+    if(jscaes_ciphers[name].tagLength && tagLength){
       if(!Number.isInteger(tagLength)) throw new Error('InvalidArguments');
       if(tagLength < 4 || tagLength > 16) throw new Error('InvalidTagLength');
     }
 };
+const nodeapi_ciphers = {
+    'AES-GCM': {
+      nodePrefix: 'aes',
+      nodeSuffix: 'gcm',
+      ivLength: 12,  // default value of iv length, 12 bytes is recommended for AES-GCM
+      tagLength: 16,
+      staticIvLength: true // if true, IV length must be always ivLength.
+    },
+    'AES-CBC': {
+      nodePrefix: 'aes',
+      nodeSuffix: 'cbc',
+      ivLength: 16,
+      staticIvLength: true
+    }
+}
+const nodeapi_decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCrypto) => {
+    let alg = nodeapi_ciphers[name].nodePrefix;
+    alg = `${alg}-${(key.byteLength*8).toString()}-`;
+    alg = alg + nodeapi_ciphers[name].nodeSuffix;
+    let decipher;
+    let body;
+    switch(name){
+    case 'AES-GCM': {
+      decipher = nodeCrypto.createDecipheriv(alg, key, iv, {authTagLength: tagLength});
+      decipher.setAAD(additionalData);
+      body = data.slice(0, data.length - tagLength);
+      const tag = data.slice(data.length - tagLength);
+      decipher.setAuthTag(tag);
+      break;
+    }
+    case 'AES-CBC': {
+      decipher = nodeCrypto.createDecipheriv(alg, key, iv);
+      body = data;
+      break;
+    }
+    default: throw new Error('UnsupportedCipher');
+    }
+    const decryptedBody = decipher.update(body);
+    let final;
+    try{
+      final = decipher.final();
+    } catch (e) {
+      throw new Error('DecryptionFailure');
+    }
+    const msg = new Uint8Array(final.length + decryptedBody.length);
+    msg.set(decryptedBody);
+    msg.set(final, decryptedBody.length);
+    return msg;
+};
+const nodeapi_encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCrypto) => {
+    let alg = nodeapi_ciphers[name].nodePrefix;
+    alg = `${alg}-${(key.byteLength*8).toString()}-`;
+    alg = alg + nodeapi_ciphers[name].nodeSuffix;
+    let cipher;
+    switch(name){
+    case 'AES-GCM': {
+      cipher = nodeCrypto.createCipheriv(alg, key, iv, {authTagLength: tagLength});
+      cipher.setAAD(additionalData);
+      break;
+    }
+    case 'AES-CBC': {
+      cipher = nodeCrypto.createCipheriv(alg, key, iv);
+      break;
+    }}
+    const body = new Uint8Array(cipher.update(msg));
+    const final = new Uint8Array(cipher.final());
+    let tag = new Uint8Array([]);
+    if(name === 'AES-GCM') tag = new Uint8Array(cipher.getAuthTag());
+    const data = new Uint8Array(body.length + final.length + tag.length);
+    data.set(body);
+    data.set(final, body.length);
+    data.set(tag, body.length + final.length);
+    return data;
+};
+  
 const jschash_hashes = {
     'SHA-256': {nodeName: 'sha256', hashSize: 32},
     'SHA-384': {nodeName: 'sha384', hashSize: 48},
@@ -1135,7 +1229,7 @@ const nodedigest = (hash, msg, nodeCrypto) => {
 };
 const getJwkThumbprint = async (jwkey, alg='SHA-256', output='binary') => {
     // assertion
-    if(['hex', 'binary'].indexOf(output) < 0) throw new Error('UnsupportedOutputFormat');
+    if(['hex', 'binary','base64'].indexOf(output) < 0) throw new Error('UnsupportedOutputFormat');
     let jsonString;
     if(jwkey.kty === 'EC'){
       jsonString = JSON.stringify({crv: jwkey.crv, kty: jwkey.kty, x: jwkey.x, y: jwkey.y});
@@ -1150,3 +1244,5 @@ const getJwkThumbprint = async (jwkey, alg='SHA-256', output='binary') => {
     else if(output === 'base64') return encodeBase64(thumbPrintBuf);
     else if (output === 'binary') return thumbPrintBuf;
 };
+
+module.exports = Key;
