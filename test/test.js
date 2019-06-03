@@ -26,8 +26,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
   describe('Using Node Crypto to generate key Pair', () => {
       it('Default Key Pair generation', async () => {
         const {publicKey, privateKey} = getKeyPair()
-        console.info(publicKey)
-        console.info(privateKey)
+        //console.info(publicKey)
+        //console.info(privateKey)
         assert(typeof publicKey == 'string' && typeof privateKey == 'string');
       })
       describe('PEM RSA key Pair', () => {
