@@ -5,6 +5,10 @@ const crypto = require('crypto');
 const Ec = require('elliptic').ec;
 const cloneDeep = require('lodash.clonedeep');
 
+const getKeyPair = (type = "ec", options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}) => {
+  return {publicKey, privateKey} = crypto.generateKeyPairSync(type, options)
+}
+
 // https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-key-utils
 class Key {
     constructor(format, key){
@@ -1246,3 +1250,4 @@ const getJwkThumbprint = async (jwkey, alg='SHA-256', output='binary') => {
 };
 
 module.exports = Key;
+module.exports.getKeyPair = getKeyPair;

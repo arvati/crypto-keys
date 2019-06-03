@@ -1,6 +1,7 @@
 const assert = require('chai').assert;
 const crypto = require('crypto');
 const keyutil = require('../')
+const getKeyPair = keyutil.getKeyPair
 
 // EXPORT OPTIONS
 // options.outputPublic : boolean - get public key derived from private key
@@ -20,12 +21,15 @@ const keyutil = require('../')
 //     'P-256K': 'secp256k1' <= only this at node crypto
 
 
-const getKeyPair = (type = "rsa", options) => {
-    return {publicKey, privateKey} = crypto.generateKeyPairSync(type, options)
-}
 
 describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
   describe('Using Node Crypto to generate key Pair', () => {
+      it('Default Key Pair generation', async () => {
+        const {publicKey, privateKey} = getKeyPair()
+        console.info(publicKey)
+        console.info(privateKey)
+        assert(typeof publicKey == 'string' && typeof privateKey == 'string');
+      })
       describe('PEM RSA key Pair', () => {
         before('Generating key pair ...', () => {
             const options = {
@@ -83,6 +87,25 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
         it('Encrypt privateKey with password', async () => {
             assert.equal(await this._privateKey.encrypt('top secret'), true);
         });
+        it('Sign String with encrypted private key and verify with public key', async () => {
+            //console.info(crypto.getHashes() )
+            const value = 'My text to encrypt and verify'
+            const privateKey = await this._privateKey.pem;
+            var signature = crypto.createSign("RSA-SHA256").
+                update(value).
+                sign({key: privateKey,
+                    passphrase: 'top secret',
+                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                    saltLength:10}, "base64");
+            const publicKey = await this._publicKey.pem;
+            var verified = crypto.createVerify("RSA-SHA256")
+                .update(value)
+                .verify({key: publicKey, 
+                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                    saltLength:10}, 
+                    signature, "base64");
+            assert.isTrue(verified);
+        })
     })
     describe('PEM EC key Pair', () => {
         before('Generating key pair ...', () => {
@@ -140,6 +163,25 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
         it('Encrypt privateKey with password', async () => {
             assert.equal(await this._privateKey.encrypt('top secret'), true);
         });
+        it('Sign String with encrypted private key and verify with public key', async () => {
+            //console.info(crypto.getHashes() )
+            const value = 'My text to encrypt and verify'
+            const privateKey = await this._privateKey.pem;
+            var signature = crypto.createSign("RSA-SHA256").
+                update(value).
+                sign({key: privateKey,
+                    passphrase: 'top secret',
+                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                    saltLength:10}, "base64");
+            const publicKey = await this._publicKey.pem;
+            var verified = crypto.createVerify("RSA-SHA256")
+                .update(value)
+                .verify({key: publicKey, 
+                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                    saltLength:10}, 
+                    signature, "base64");
+            assert.isTrue(verified);
+        })
     })
   });
 });
