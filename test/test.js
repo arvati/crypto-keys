@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const crypto = require('crypto');
-const keyutil = require('../')
+const keyutil = require('../lib/')
 const getKeyPair = keyutil.getKeyPair
 
 // EXPORT OPTIONS
@@ -25,10 +25,12 @@ const getKeyPair = keyutil.getKeyPair
 describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
   describe('Using Node Crypto to generate key Pair', () => {
       it('Default Key Pair generation', async () => {
-        const {publicKey, privateKey} = getKeyPair()
+        const  options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}
+        const {publicKey, privateKey} = crypto.generateKeyPairSync('ec', options)
         //console.info(publicKey)
         //console.info(privateKey)
-        assert(typeof publicKey == 'string' && typeof privateKey == 'string');
+        assert.isString(publicKey,'public key is not a string')
+        assert.isString(privateKey,'public key is not a string');
       })
       describe('PEM RSA key Pair', () => {
         before('Generating key pair ...', () => {
@@ -52,19 +54,19 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             this._privateKey = new keyutil('pem', privateKey);
         })
         it('isPrivate of publicKey is False', async () => {
-            assert.equal(await this._publicKey.isPrivate, false);
+            assert.isFalse(await this._publicKey.isPrivate);
         });
         it('isEncrypted of publicKey is False', async () => {
-            assert.equal(await this._publicKey.isEncrypted, false);
+            assert.isFalse(await this._publicKey.isEncrypted);
         });
         it('Key type of publicKey is RSA', async () => {
             assert.equal(await this._publicKey.keyType, 'RSA');
         });
         it('isPrivate of privateKey is True', async () => {
-            assert.equal(await this._privateKey.isPrivate, true);
+            assert.isTrue(await this._privateKey.isPrivate);
         });
         it('isEncrypted of privateKey is True', async () => {
-            assert.equal(await this._privateKey.isEncrypted, true);
+            assert.isTrue(await this._privateKey.isEncrypted);
         });
         it('Decrypt privateKey with wrong password', async () => {
             try {
@@ -76,7 +78,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
               
         });
         it('Decrypt privateKey with password', async () => {
-            assert.equal(await this._privateKey.decrypt('top secret'), true);
+            assert.isTrue(await this._privateKey.decrypt('top secret'));
         });
         it('Key type of privateKey is RSA', async () => {
             assert.equal(await this._privateKey.keyType, 'RSA');
@@ -85,7 +87,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.equal((await this._privateKey.export('pem', {outputPublic: true})).replace(/\n$/, ""),this._pemPublicKey.replace(/\n$/, ""))
         })
         it('Encrypt privateKey with password', async () => {
-            assert.equal(await this._privateKey.encrypt('top secret'), true);
+            assert.isTrue(await this._privateKey.encrypt('top secret'));
         });
         it('Sign String with encrypted private key and verify with public key', async () => {
             //console.info(crypto.getHashes() )
@@ -129,30 +131,27 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             this._privateKey = new keyutil('pem', privateKey);
         })
         it('isPrivate of publicKey is False', async () => {
-            assert.equal(await this._publicKey.isPrivate, false);
+            assert.isFalse(await this._publicKey.isPrivate);
         });
         it('isEncrypted of publicKey is False', async () => {
-            assert.equal(await this._publicKey.isEncrypted, false);
+            assert.isFalse(await this._publicKey.isEncrypted);
         });
         it('Key type of publicKey is EC', async () => {
             assert.equal(await this._publicKey.keyType, 'EC');
         });
         it('isPrivate of privateKey is True', async () => {
-            assert.equal(await this._privateKey.isPrivate, true);
+            assert.isTrue(await this._privateKey.isPrivate);
         });
         it('isEncrypted of privateKey is True', async () => {
-            assert.equal(await this._privateKey.isEncrypted, true);
+            assert.isTrue(await this._privateKey.isEncrypted);
         });
         it('Decrypt privateKey with wrong password', async () => {
-            try {
-                await this._privateKey.decrypt('just secret')
-                assert.isTrue(false)
-              } catch (e) {
-                assert.isTrue(e.message === 'FailedToDecryptNode: DecryptionFailure')
-              }
+            //todo
+            assert.throws(this._privateKey.decrypt('just secret'),'FailedToDecryptNode: DecryptionFailure')
+
         });
         it('Decrypt privateKey with password', async () => {
-            assert.equal(await this._privateKey.decrypt('top secret'), true);
+            assert.isTrue(await this._privateKey.decrypt('top secret'));
         });
         it('Key type of privateKey is EC', async () => {
             assert.equal(await this._privateKey.keyType, 'EC');
@@ -161,7 +160,11 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.equal((await this._privateKey.export('pem', {outputPublic: true})).replace(/\n$/, ""),this._pemPublicKey.replace(/\n$/, ""))
         })
         it('Encrypt privateKey with password', async () => {
-            assert.equal(await this._privateKey.encrypt('top secret'), true);
+            assert.isTrue(await this._privateKey.encrypt('top secret'));
+        });
+        it('Export privateKey with password', async () => {
+            console.info(typeof await this._privateKey.der)
+            assert.equal(await this._privateKey.der, true);
         });
         it('Sign String with encrypted private key and verify with public key', async () => {
             //console.info(crypto.getHashes() )

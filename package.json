@@ -25,7 +25,7 @@
   "private": false,
   "homepage": "https://github.com/arvati/crypto-keys#readme",
   "bugs": "https://github.com/arvati/crypto-keys/issues",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "mocha",
     "git": "git add . && git commit -m",
@@ -48,6 +48,6 @@
     "node": ">7.10.1"
   },
   "files": [
-    "index.js"
+    "lib/index.js"
   ]
 }
