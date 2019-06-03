@@ -1,7 +1,39 @@
 {
+  "name": "crypto-keys",
+  "version": "0.0.1",
+  "description": "Node Module for Cryptographic Key Utilities in JavaScript, including PEM-JWK converters",
+  "keywords": [
+    "crypto",
+    "pem",
+    "der",
+    "jwk",
+    "spki",
+    "pkcs8",
+    "asn1",
+    "ecc",
+    "rsa",
+    "jwk thumbprint",
+    "rfc3447",
+    "rfc5280",
+    "rfc5208",
+    "rfc5480",
+    "rfc5915",
+    "rfc5958",
+    "rfc7638",
+    "rfc8018"
+  ],
+  "private": false,
+  "homepage": "https://github.com/arvati/crypto-keys#readme",
+  "bugs": "https://github.com/arvati/crypto-keys/issues",
+  "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "git": "git add . && git commit -m",
+    "postgit": "git push --all"
   },
+  "repository": "github:arvati/crypto-keys",
+  "author": "Ademar Arvati Filho (https://github.com/arvati)",
+  "license": "MIT",
   "dependencies": {
     "asn1.js": "^5.0.1",
     "des.js": "^1.0.0",
@@ -11,5 +43,11 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.4"
-  }
+  },
+  "engines": {
+    "node": ">7.10.1"
+  },
+  "files": [
+    "index.js"
+  ]
 }

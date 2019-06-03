@@ -15,6 +15,9 @@ Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447)  for the detailed
 ## License
 Licensed under the MIT license, see `LICENSE.md` file.
 
+## Author
+[Ademar Arvati Filho](https://github.com/arvati)    
+[Contributors](AUTHORS.md)
+
 # Credits
 This fork is totally based on work published by [junkurihara](https://github.com/junkurihara) at [js-crypto-key-utils](https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-key-utils)
-
