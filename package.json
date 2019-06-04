@@ -49,6 +49,7 @@
     "node": ">7.10.1"
   },
   "files": [
-    "lib/index.js"
+    "lib/index.js",
+    "lib/jsbn.js"
   ]
 }

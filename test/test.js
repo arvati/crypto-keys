@@ -1,7 +1,6 @@
 const assert = require('chai').assert;
 const crypto = require('crypto');
 const keyutil = require('../lib/')
-const getKeyPair = keyutil.getKeyPair
 
 // EXPORT OPTIONS
 // options.outputPublic : boolean - get public key derived from private key
@@ -20,36 +19,28 @@ const getKeyPair = keyutil.getKeyPair
 //     'P-521': 'p521'
 //     'P-256K': 'secp256k1' <= only this at node crypto
 
+
+
 describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
-  describe('Using Node Crypto to generate key Pair', () => {
-      it('Default Key Pair generation', () => {
-        const  options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}
-        const {publicKey, privateKey} = crypto.generateKeyPairSync('ec', options)
-        assert.isString(publicKey,'public key is not a string')
+
+    const getKeyPair = (type = "ec", options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}) => {
+        return {publicKey, privateKey} = crypto.generateKeyPairSync(type, options)
+    }
+
+      it('Default Key Pair generation using crypto', () => {
+        // This will only work with higher versions of nodejs >=10
+        const {publicKey, privateKey} = getKeyPair()
+        assert.isString(publicKey,'public key is not a string');
         assert.isString(privateKey,'public key is not a string');
       })
+
       describe('PEM RSA key Pair', () => {
         it('Generating key pair ...', () => {
-            const options = {
-                modulusLength: 1024,
-                publicKeyEncoding: {
-                type: 'spki',
-                format: 'pem'
-                },
-                privateKeyEncoding: {
-                type: 'pkcs8',
-                format: 'pem',
-                cipher: 'aes-256-cbc',
-                passphrase: 'top secret'
-                }
-            }
-            const {publicKey, privateKey} = getKeyPair('rsa', options)
-            this._pemPublicKey = publicKey
-            this._pemPrivateKey = privateKey
-            this._publicKey = new keyutil('pem', publicKey);
-            this._privateKey = new keyutil('pem', privateKey);
-            assert.isObject(this._publicKey,'public key is not a string')
-            assert.isObject(this._privateKey,'public key is not a string');
+            this._privateKey = new keyutil('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
+            this._publicKey = new keyutil('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
+            this._privateKey.encrypt('top secret')
+            assert.isObject(this._publicKey,'public key is not a object');
+            assert.isObject(this._privateKey,'public key is not a object');
         })
         it('isPrivate of publicKey is False', () => {
             assert.isFalse(this._publicKey.isPrivate);
@@ -76,7 +67,23 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.equal(this._privateKey.keyType, 'RSA');
         });
         it('Export privateKey as publicKey', () => {
-            assert.equal((this._privateKey.export('pem', {outputPublic: true})).replace(/\n$/, ""),this._pemPublicKey.replace(/\n$/, ""))
+            const options = {
+                modulusLength: 1024,
+                publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+                },
+                privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem',
+                cipher: 'aes-256-cbc',
+                passphrase: 'top secret'
+                }
+            }
+            const {publicKey, privateKey} = getKeyPair('rsa', options)
+            key = new keyutil('pem', privateKey);
+
+            assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
         })
         it('Encrypt privateKey with password', () => {
             assert.isTrue(this._privateKey.encrypt('top secret'));
@@ -103,26 +110,11 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
     })
     describe('PEM EC key Pair', () => {
         it('Generating key pair ...', () => {
-            const options = {
-                namedCurve: 'secp256k1',
-                publicKeyEncoding: {
-                type: 'spki',
-                format: 'pem'
-                },
-                privateKeyEncoding: {
-                type: 'pkcs8',
-                format: 'pem',
-                cipher: 'aes-256-cbc',
-                passphrase: 'top secret'
-                }
-            }
-            const {publicKey, privateKey} = getKeyPair('ec', options)
-            this._pemPublicKey = publicKey
-            this._pemPrivateKey = privateKey
-            this._publicKey = new keyutil('pem', publicKey);
-            this._privateKey = new keyutil('pem', privateKey);
-            assert.isObject(this._publicKey,'public key is not a string')
-            assert.isObject(this._privateKey,'public key is not a string');
+            this._privateKey = new keyutil('create', {type:'ec', namedCurve:'P-256K'});
+            this._publicKey = new keyutil('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
+            this._privateKey.encrypt('top secret')
+            assert.isObject(this._publicKey,'public key is not a object');
+            assert.isObject(this._privateKey,'public key is not a object');
         })
         it('isPrivate of publicKey is False', () => {
             assert.isFalse(this._publicKey.isPrivate);
@@ -149,7 +141,23 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.equal(this._privateKey.keyType, 'EC');
         });
         it('Export privateKey as publicKey', () => {
-            assert.equal((this._privateKey.export('pem', {outputPublic: true})).replace(/\n$/, ""),this._pemPublicKey.replace(/\n$/, ""))
+            const options = {
+                namedCurve: 'secp256k1',
+                publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+                },
+                privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem',
+                cipher: 'aes-256-cbc',
+                passphrase: 'top secret'
+                }
+            }
+            const {publicKey, privateKey} = getKeyPair('ec', options)
+            key = new keyutil('pem', privateKey);
+
+            assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
         })
         it('Encrypt privateKey with password', () => {
             assert.isTrue(this._privateKey.encrypt('new secret'));
@@ -181,5 +189,4 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.isTrue(verified);
         })
     })
-  });
 });
