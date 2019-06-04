@@ -27,7 +27,7 @@
   "bugs": "https://github.com/arvati/crypto-keys/issues",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha -R progress",
     "doc": "mocha -R markdown > USAGE.md",
     "git": "git add . && git commit -m",
     "postgit": "git push --all"
