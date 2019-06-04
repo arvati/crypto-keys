@@ -28,6 +28,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha",
+    "doc": "mocha -R markdown > USAGE.md",
     "git": "git add . && git commit -m",
     "postgit": "git push --all"
   },

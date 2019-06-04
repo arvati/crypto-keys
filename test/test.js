@@ -29,7 +29,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
         assert.isString(privateKey,'public key is not a string');
       })
       describe('PEM RSA key Pair', () => {
-        before('Generating key pair ...', () => {
+        it('Generating key pair ...', () => {
             const options = {
                 modulusLength: 1024,
                 publicKeyEncoding: {
@@ -48,6 +48,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             this._pemPrivateKey = privateKey
             this._publicKey = new keyutil('pem', publicKey);
             this._privateKey = new keyutil('pem', privateKey);
+            assert.isObject(this._publicKey,'public key is not a string')
+            assert.isObject(this._privateKey,'public key is not a string');
         })
         it('isPrivate of publicKey is False', () => {
             assert.isFalse(this._publicKey.isPrivate);
@@ -100,7 +102,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
         })
     })
     describe('PEM EC key Pair', () => {
-        before('Generating key pair ...', () => {
+        it('Generating key pair ...', () => {
             const options = {
                 namedCurve: 'secp256k1',
                 publicKeyEncoding: {
@@ -119,6 +121,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             this._pemPrivateKey = privateKey
             this._publicKey = new keyutil('pem', publicKey);
             this._privateKey = new keyutil('pem', privateKey);
+            assert.isObject(this._publicKey,'public key is not a string')
+            assert.isObject(this._privateKey,'public key is not a string');
         })
         it('isPrivate of publicKey is False', () => {
             assert.isFalse(this._publicKey.isPrivate);

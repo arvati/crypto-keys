@@ -11,6 +11,7 @@ Supported key types are PEM/DER.
 
 Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447)  for the detailed encoding rule of RSA public and private keys.
 
+See examples of [usage](USAGE.md)
 
 ## License
 Licensed under the MIT license, see `LICENSE.md` file.
