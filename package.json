@@ -13,21 +13,14 @@
     "ecc",
     "rsa",
     "jwk thumbprint",
-    "rfc3447",
-    "rfc5280",
-    "rfc5208",
-    "rfc5480",
-    "rfc5915",
-    "rfc5958",
-    "rfc7638",
-    "rfc8018"
+    "keypair"
   ],
   "private": false,
   "homepage": "https://github.com/arvati/crypto-keys#readme",
   "bugs": "https://github.com/arvati/crypto-keys/issues",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha -R progress",
+    "test": "mocha -R spec",
     "doc": "mocha -R markdown > USAGE.md",
     "git": "git add . && git commit -m",
     "postgit": "git push --all"

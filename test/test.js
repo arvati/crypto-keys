@@ -26,7 +26,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
     const getKeyPair = (type = "ec", options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}) => {
         return {publicKey, privateKey} = crypto.generateKeyPairSync(type, options)
     }
-
+    
       it('Default Key Pair generation using crypto', () => {
         // This will only work with higher versions of nodejs >=10
         const {publicKey, privateKey} = getKeyPair()
@@ -41,7 +41,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             this._privateKey.encrypt('top secret')
             assert.isObject(this._publicKey,'public key is not a object');
             assert.isObject(this._privateKey,'public key is not a object');
-        })
+        }).timeout(5000);
         it('isPrivate of publicKey is False', () => {
             assert.isFalse(this._publicKey.isPrivate);
         });
@@ -82,7 +82,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             }
             const {publicKey, privateKey} = getKeyPair('rsa', options)
             key = new keyutil('pem', privateKey);
-
+            key.decrypt('top secret')
             assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
         })
         it('Encrypt privateKey with password', () => {
@@ -132,7 +132,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.isTrue(this._privateKey.isEncrypted);
         });
         it('Decrypt privateKey with wrong password', () => {
-            assert.throws(()=>this._privateKey.decrypt('just secret'),Error,'DecryptionFailure')
+            assert.throws(()=>{this._privateKey.decrypt('just secret')},Error,'DecryptionFailure')
         });
         it('Decrypt privateKey with password', () => {
             assert.isTrue(this._privateKey.decrypt('top secret'));
@@ -156,7 +156,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             }
             const {publicKey, privateKey} = getKeyPair('ec', options)
             key = new keyutil('pem', privateKey);
-
+            key.decrypt('top secret')
             assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
         })
         it('Encrypt privateKey with password', () => {
@@ -164,19 +164,19 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
         });
         it('Export privateKey with password', () => {
             privateKey = new keyutil('der', this._privateKey.der); 
-            originalPrivateKey = new keyutil('pem', this._pemPrivateKey); 
-            originalPrivateKey.decrypt('top secret')
-            privateKey.decrypt('new secret')
-            assert.deepEqual(privateKey.jwk,originalPrivateKey.jwk);
+            originalPrivateKey = new keyutil('pem', this._privateKey.pem); 
+            assert.deepEqual(privateKey.der,originalPrivateKey.der);
+            assert.throws(()=>{this._privateKey.jwk},Error,'DecryptionRequired')
         });
         it('Sign String with encrypted private key and verify with public key', async () => {
-            //console.info(crypto.getHashes() )
+            //this._privateKey.encrypt('new secret')
             const value = 'My text to encrypt and verify'
             const privateKey = this._privateKey.pem;
             var signature = crypto.createSign("RSA-SHA256").
                 update(value).
                 sign({key: privateKey,
                     passphrase: 'new secret',
+                    format:'pem',
                     padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
                     saltLength:10}, "base64");
             const publicKey = this._publicKey.pem;
