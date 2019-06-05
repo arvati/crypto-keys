@@ -14,14 +14,14 @@ Supported key types are PEM/DER.
 
 Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447)  for the detailed encoding rule of RSA public and private keys.
 
-See examples of [usage](USAGE.md)
+See examples of [Usage](https://github.com/arvati/crypto-keys/blob/master/USAGE.md).
 
 ## License
-Licensed under the MIT license, see `LICENSE.md` file.
+Licensed under the MIT license, see [LICENSE](https://github.com/arvati/crypto-keys/blob/master/LICENSE.md).
 
 ## Author
 [Ademar Arvati Filho](https://github.com/arvati)    
-[Contributors](AUTHORS.md)
+[Contributors](https://github.com/arvati/crypto-keys/blob/master/AUTHORS.md).
 
 # Credits
 This fork is totally based on work published by [junkurihara](https://github.com/junkurihara) at [js-crypto-key-utils](https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-key-utils)
