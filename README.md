@@ -1,7 +1,7 @@
 # Crypto-keys
  > Node Module for Cryptographic Key Utilities in JavaScript'
 
-Node Javascript Tool to generate encrypt and decrypt RSA and EC keys formated as PEM / DER.
+Node Javascript Tool to generate, encrypt and decrypt RSA and EC keys formated as PEM / DER.
 
 Fork of [js-crypto-key-utils](https://www.npmjs.com/package/js-crypto-key-utils) to work only with node.js,  with less dependencies and not available for Octet-Formatted Key.    
 
