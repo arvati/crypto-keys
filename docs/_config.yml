@@ -1,17 +1,5 @@
-name: docs
-highlighter: rouge
-url: "http://corp.eng.br/crypto-keys/"
-author: arvati
 google_analytics: UA-18418059-2
-
-# If you want to link only specific pages in your header, uncomment this and add the path to the pages in order as they should show up
-header_pages:
- - tests.md
-
-# Build settings
 theme: jekyll-theme-hacker
-
-show_downloads: true
 
 plugins:
  - jekyll-feed
