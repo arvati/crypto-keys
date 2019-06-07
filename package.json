@@ -20,8 +20,8 @@
   "bugs": "https://github.com/arvati/crypto-keys/issues",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha -R spec",
-    "doc": "mocha -R markdown > USAGE.md",
+    "test": "DOTENV_CONFIG_PATH=./test/.env mocha -R spec",
+    "doc": "DOTENV_CONFIG_PATH=./test/.env mocha -R markdown > USAGE.md",
     "git": "git add . && git commit -m",
     "postgit": "git push --all"
   },
@@ -36,13 +36,17 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.4"
+    "coverage": "^0.4.0",
+    "dotenv": "^8.0.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1"
   },
   "engines": {
     "node": ">7.10.1"
   },
   "files": [
     "lib/index.js",
-    "lib/jsbn.js"
+    "lib/jsbn.js",
+    "AUTHORS.md"
   ]
 }
