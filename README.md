@@ -15,7 +15,7 @@ Supported key types are PEM/DER.
 
 Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447)  for the detailed encoding rule of RSA public and private keys.
 
-See examples of [Usage](https://github.com/arvati/crypto-keys/blob/master/USAGE.md).
+See examples of [Tests](https://github.com/arvati/crypto-keys/blob/master/docs/tests.md).
 
 ## License
 Licensed under the MIT license, see [LICENSE](https://github.com/arvati/crypto-keys/blob/master/LICENSE.md).

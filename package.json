@@ -21,7 +21,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "DOTENV_CONFIG_PATH=./test/.env mocha -R spec",
-    "doc": "DOTENV_CONFIG_PATH=./test/.env mocha -R markdown > USAGE.md",
+    "docs": "DOTENV_CONFIG_PATH=./test/.env mocha -R markdown > ./docs/tests.md && jsdoc2md ./lib/index.js > ./docs/index.md",
     "git": "git add . && git commit -m",
     "postgit": "git push --all"
   },
@@ -38,6 +38,7 @@
     "chai": "^4.2.0",
     "coverage": "^0.4.0",
     "dotenv": "^8.0.0",
+    "jsdoc-to-markdown": "^5.0.0",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1"
   },
