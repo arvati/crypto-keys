@@ -1,50 +1,17 @@
-name: Crypto-Keys
-markdown: kramdown
-permalink: /blog/:year/:month/:day/:title
+name: docs
 highlighter: rouge
 url: "http://corp.eng.br/crypto-keys/"
-title: crypto-keys
 author: arvati
-email:
-description: > # this means to ignore newlines until "show_exerpts:"
-  Gists, articles, reminders about FLOSS and other tools.
-show_excerpts: true # set to true to show excerpts on the homepage
-show_drafts: false
 google_analytics: UA-18418059-2
-# Minima date format - refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
-minima:
-  date_format: "%-d/%m/%y"
-  # generate social links in footer
-  social_links:
-    twitter: arvati
-    github:  arvati
-    rss: rss
-    # dribbble: jekyll
-    facebook: arvati
-    flickr:   arvati
-    instagram: aarvati
-    linkedin: arvati
-    # pinterest: jekyll
-    youtube: aarvati
-    # youtube_channel: UC8CXR0-3I70i1tfPg1PAE1g
-    # youtube_channel_name: CloudCannon
-    # telegram: jekyll
-    googleplus: +AdemarArvatiFilho
-    # microdotblog: jekyll
-
-    # Mastodon instances
-    # mastodon:
-    # - username: jekyll
-    #   instance: example.com
-    # - username: jekyll2
-    #   instance: example.com
 
 # If you want to link only specific pages in your header, uncomment this and add the path to the pages in order as they should show up
 header_pages:
  - tests.md
 
 # Build settings
-theme: minima
+theme: jekyll-theme-hacker
+
+show_downloads: true
 
 plugins:
  - jekyll-feed
