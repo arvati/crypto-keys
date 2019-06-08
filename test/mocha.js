@@ -64,6 +64,6 @@ mocha.run((failures) => {
 jsdoc2md.render({files: 'lib/*.js'})
     .then((rendered) => {
         // link = https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback
-        fs.writeFile('./docs/readme.md',rendered.concat('<hr>\n', stdout.join('')), (err) => {if (err) throw err})
+        fs.writeFile('./docs/docs.md',rendered.concat('\n', stdout.join('')), (err) => {if (err) throw err})
     })
 
