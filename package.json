@@ -16,7 +16,7 @@
     "keypair"
   ],
   "private": false,
-  "homepage": "https://github.com/arvati/crypto-keys#readme",
+  "homepage": "https://arvati.github.io/crypto-keys",
   "bugs": "https://github.com/arvati/crypto-keys/issues",
   "main": "lib/index.js",
   "scripts": {
@@ -46,8 +46,16 @@
     "node": ">7.10.1"
   },
   "files": [
-    "lib/index.js",
-    "lib/jsbn.js",
-    "AUTHORS.md"
-  ]
+    "./lib/*.js",
+    "./docs/*.md",
+    "./AUTHORS.md",
+    "./test/*.js",
+    "./example/*.js"
+  ],
+  "directories": {
+    "doc": "./docs",
+    "lib": "./lib",
+    "test": "./test",
+    "example": "./example"
+  }
 }
