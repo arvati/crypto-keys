@@ -20,6 +20,7 @@
   "bugs": "https://github.com/arvati/crypto-keys/issues",
   "main": "lib/index.js",
   "scripts": {
+    "ok": "node test/mocha",
     "test": "DOTENV_CONFIG_PATH=./test/.env mocha -R spec",
     "docs": "DOTENV_CONFIG_PATH=./test/.env mocha -R markdown > ./docs/tests.md && jsdoc2md ./lib/index.js > ./docs/index.md",
     "git": "git add . && git commit -m",
