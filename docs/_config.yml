@@ -10,7 +10,17 @@ search_enabled: false
 aux_links:
   "Crypto-Keys on GitHub":
     - "//github.com/arvati/crypto-keys"
-color_scheme: nil # or dark
+color_scheme: "dark"
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      nav_exclude: false
+      search_exclude: true
+      has_toc: false
 
 ga_tracking: UA-18418059-2
 plugins:
