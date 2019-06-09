@@ -6,7 +6,7 @@ description: Node Javascript Tool to generate ,encrypt and decrypt RSA and EC ke
 baseurl: "/crypto-keys/"
 url: "https://corp.eng.br" 
 permalink: pretty
-color_scheme: nil # or dark
+color_scheme: dark
 exclude: [*.js]
 search_enabled: false
 aux_links:
