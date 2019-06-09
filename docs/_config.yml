@@ -1,5 +1,6 @@
 google_analytics: UA-18418059-2
-theme: jekyll-theme-hacker
+#theme: jekyll-theme-hacker
+remote_theme: pmarsceill/just-the-docs
 
 plugins:
  - jekyll-feed
