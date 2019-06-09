@@ -1,17 +1,27 @@
 # https://kramdown.gettalong.org/converter/html.html
-
+markdown: kramdown
 remote_theme: pmarsceill/just-the-docs # https://github.com/pmarsceill/just-the-docs/
 title: Crypto-Keys
 description: Node Javascript Tool to generate ,encrypt and decrypt RSA and EC keys formated as PEM / DER.
 baseurl: "/crypto-keys/"
 url: "https://corp.eng.br" 
 permalink: pretty
-color_scheme: dark
-exclude: [*.js]
+color_scheme: nil # nil or dark
+exclude: ["*.js", "*.gemspec", "*.gem", "Gemfile", "Gemfile.lock", "Rakefile"]
 search_enabled: false
 aux_links:
   "Crypto-Keys on GitHub":
     - "//github.com/arvati/crypto-keys"
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      nav_exclude: false
+      search_exclude: true
+      has_toc: true
 
 ga_tracking: UA-18418059-2
 
@@ -27,3 +37,7 @@ plugins:
 # - jekyll-redirect-from
 # - jekyll-avatar
 # - jekyll-include-cache
+
+# Local server with
+# cd docs
+# bundle exec jekyll serve

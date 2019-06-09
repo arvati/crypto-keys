@@ -60,3 +60,9 @@ typings/
 # next.js build output
 .next
 
+# ruby
+*.gem
+.bundle
+.sass-cache
+_site
+Gemfile.lock

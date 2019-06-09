@@ -28,3 +28,5 @@ Licensed under the MIT license, see [LICENSE](https://github.com/arvati/crypto-k
 This fork is totally based on work published by [junkurihara](https://github.com/junkurihara) at [js-crypto-key-utils](https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-key-utils)
 
 It uses library publish by [Tom Wu](mailto:tjw@cs.Stanford.EDU) at [stanford jsbn](http://www-cs-students.stanford.edu/~tjw/jsbn/) to generate keypair in pure js.
+
+Using Great Jekyll theme [Just the Docs](https://github.com/pmarsceill/just-the-docs) by [Patrick Marsceill](http://patrickmarsceill.com/)
