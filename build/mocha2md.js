@@ -137,16 +137,10 @@ class mocha2md extends Base {
             --level;
         });
         runner.once(EVENT_RUN_END, () => {
-            console.log(`mocha2md reporter options :`)
-            console.log(` path: ${reporterOptions.path}`)
-            console.log(` filename: ${reporterOptions.filename}`)
-            console.log(` title: ${reporterOptions.title}`)
-            console.log(` quiet: ${reporterOptions.quiet}`)
-            console.log(` level: ${reporterOptions.level}`)
-            const markdown = title(reporterOptions.title,reporterOptions.level+1) + generateTOC(runner.suite) + buf + '<hr>\n >';
+            const markdown = title(reporterOptions.title,reporterOptions.level+1) + generateTOC(runner.suite) + buf + '<hr>\n';
             runner.markdown = markdown
             if (!reporterOptions.quiet) process.stdout.write(markdown) 
-                else super.epilogue();
+            super.epilogue();
             if (reporterOptions.filename) fs.writeFile(path.join(reporterOptions.path,reporterOptions.filename),markdown, (err) => {if (err) throw err})
         });
     }

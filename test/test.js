@@ -41,7 +41,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             this._privateKey.encrypt('top secret')
             assert.isObject(this._publicKey,'public key is not a object');
             assert.isObject(this._privateKey,'public key is not a object');
-        }).timeout(5000);
+        }).timeout(10000);
         it('isPrivate of publicKey is False', () => {
             assert.isFalse(this._publicKey.isPrivate);
         });
