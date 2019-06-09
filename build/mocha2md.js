@@ -52,7 +52,9 @@ class mocha2md extends Base {
             path: config.path,
             quiet: config.quiet,
             level: config.level,
-            toc: config.toc
+            toc: config.toc,
+            append: config.append,
+            prepend: config.prepend
         });
         
         super(runner, options);
@@ -79,7 +81,7 @@ class mocha2md extends Base {
                     continue;
                 }
                 if (key !== SUITE_PREFIX) {
-                    link = '* [' + key.substring(1) + ']';
+                    link = '- [' + key.substring(1) + ']';
                     link += '(#' + utils.slug(obj[key].suite.fullTitle()) + ')\n';
                     buf += Array(level).join('    ') + link;
                 }
@@ -142,18 +144,20 @@ class mocha2md extends Base {
         });
         runner.once(EVENT_RUN_END, () => {
             var markdown = ''
+            if (reporterOptions.prepend) markdown += reporterOptions.prepend + '\n'
             if (reporterOptions.title) markdown += title(reporterOptions.title,reporterOptions.level+1) + '{:.no_toc}\n'
             switch (reporterOptions.toc) {
                 case 'none':
                     markdown += ''
                     break;
                 case 'kramdown':
-                    markdown += '{:toc}\n\n'
+                    markdown += '- TOC\n{:toc}\n\n'
                     break;
                 default: //default
                     markdown += generateTOC(runner.suite) 
             }
-            markdown += buf + '<hr>\n';
+            markdown += buf + '\n'
+            if (reporterOptions.append) markdown += reporterOptions.append + '\n'
             runner.markdown = markdown
             if (!reporterOptions.quiet) process.stdout.write(markdown) 
             super.epilogue();
@@ -199,26 +203,37 @@ const conf = function (opts) {
     const reporterOpts = (opts && opts.reporterOptions) || {};
     // this comes from mocha test.js --report-path=./report.md --level 0 --quiet
     for (var i=0; i<process.argv.length; i++) {
-        if (process.argv[i] == '--report-path' || process.argv[i] == '-p') {
-            var list = process.argv[i+1].split('/');
-            var temp_path = '';
-            for (var i2=0; i2<list.length-1; i2++) {
-                temp_path += list[i2] + '/';
-            }
-            if (!reporterOpts.filename) reporterOpts.filename = list[list.length-1];
-            if (!reporterOpts.path) reporterOpts.path = temp_path;
-        }
-        if (process.argv[i] == '--quiet') {
-            if (!reporterOpts.quiet) reporterOpts.quiet = true;
-        }
-        if (process.argv[i] == '--toc') {
-            if (!reporterOpts.toc) reporterOpts.toc = process.argv[i+1];
-        }
-        if (process.argv[i] == '--level') {
-            if (!reporterOpts.level) reporterOpts.level = process.argv[i+1];
-        }
-        if (process.argv[i] == '--title' || process.argv[i] == '-t') {
-            if (!reporterOpts.title) reporterOpts.title = process.argv[i+1];
+        switch (process.argv[i]) {
+            case '--report-path' :
+            case '-p' :
+                var list = process.argv[i+1].split('/');
+                var temp_path = '';
+                for (var i2=0; i2<list.length-1; i2++) {
+                    temp_path += list[i2] + '/';
+                }
+                if (!reporterOpts.filename) reporterOpts.filename = list[list.length-1];
+                if (!reporterOpts.path) reporterOpts.path = temp_path;
+                break;
+            case '--quiet' :
+                if (!reporterOpts.quiet) reporterOpts.quiet = true;
+                break;
+            case '--toc' :
+                if (!reporterOpts.toc) reporterOpts.toc = process.argv[i+1];
+                break;
+            case '--level':
+                if (!reporterOpts.level) reporterOpts.level = process.argv[i+1];
+                break;
+            case '--title' :
+            case '-t' :
+                if (!reporterOpts.title) reporterOpts.title = process.argv[i+1];
+            case '--append' :
+            case '-a' :
+                if (!reporterOpts.append) reporterOpts.append = process.argv[i+1];
+                break;
+            case '--prepend' :
+            case '-b' :
+                if (!reporterOpts.prepend) reporterOpts.prepend = process.argv[i+1];
+                break;
         }
     }
     // Check environmental variables as 'export MOCHA_FILENAME=customReportFilename'
@@ -227,6 +242,8 @@ const conf = function (opts) {
       toc: _getOption('toc', reporterOpts, false, 'default'),
       path: _getOption('path', reporterOpts, false, './docs/'),
       filename: _getOption('filename', reporterOpts, false, null),
+      prepend: _getOption('prepend', reporterOpts, false, null),
+      append: _getOption('append', reporterOpts, false, null),
       title: _getOption('title', reporterOpts, false, null),
       level: parseInt(_getOption('level', reporterOpts, false, '1'))
     };
