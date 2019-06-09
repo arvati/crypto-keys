@@ -12,7 +12,7 @@ var mocha = new Mocha({
     reporterOptions: {quiet:true}
 });
 
-const docFile = './docs/docs.md'
+const docFile = './docs/readme.md'
 const testDir = "./test/"
 fsp.readdir(testDir)
 .then((files) => files.filter((file) => path.extname(file) === '.js')
