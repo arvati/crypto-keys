@@ -11,7 +11,16 @@ search_enabled: false
 aux_links:
   "Crypto-Keys on GitHub":
     - "//github.com/arvati/crypto-keys"
-
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      nav_exclude: false
+      search_exclude: true
+      has_toc: true
 ga_tracking: UA-18418059-2
 plugins:
  - jekyll-seo-tag
