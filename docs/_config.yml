@@ -1,11 +1,4 @@
 # https://kramdown.gettalong.org/converter/html.html
-markdown: kramdown
-kramdown:
-   input: GFM
-   html_to_native: true
-   hard_wrap: false
-   syntax_highlighter: rouge
-   toc_levels: 2..2
 
 remote_theme: pmarsceill/just-the-docs
 title: Crypto-Keys
