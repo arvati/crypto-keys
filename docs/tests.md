@@ -1,5 +1,6 @@
 # Unit Test Results
-{ :toc }
+* TOC
+{:toc}
 
 # Test 1
 ## Teste 1.1
