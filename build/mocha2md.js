@@ -51,12 +51,14 @@ class mocha2md extends Base {
             filename: config.filename,
             path: config.path,
             quiet: config.quiet,
-            level: config.level
+            level: config.level,
+            toc: config.toc
         });
         
         super(runner, options);
         var self = this;
 
+        if (reporterOptions.level <1) reporterOptions.level = 1;
         var buf = ''
         var level = reporterOptions.level
 
@@ -88,10 +90,15 @@ class mocha2md extends Base {
         const generateTOC = (suite) => '\n' + stringifyTOC(mapTOC(suite)) + '\n';
 
         runner.on(EVENT_SUITE_BEGIN, (suite) => {
-            ++level;
-            var slug = utils.slug(suite.fullTitle());
-            buf += '<a name="' + slug + '"></a>' + '\n';
-            buf += title(suite.title, level);
+            if (!suite.root) {
+                ++level;
+                if (reporterOptions.toc === 'default') {
+                    var slug = utils.slug(suite.fullTitle());
+                    buf += '<a name="' + slug + '"></a>' + '\n';
+                }
+                buf += title(suite.title, level);
+                if (reporterOptions.toc === 'none') buf += '{:.no_toc}\n'
+            }
         });
         runner.on(EVENT_TEST_PASS, (test) => {
             if (test.duration > 1000) {
@@ -130,11 +137,23 @@ class mocha2md extends Base {
             buf += '```\n\n';
         });
 
-        runner.on(EVENT_SUITE_END, () => {
-            --level;
+        runner.on(EVENT_SUITE_END, (suite) => {
+            if (!suite.root) --level;
         });
         runner.once(EVENT_RUN_END, () => {
-            const markdown = title(reporterOptions.title,reporterOptions.level+1) + generateTOC(runner.suite) + buf + '<hr>\n';
+            var markdown = ''
+            if (reporterOptions.title) markdown += title(reporterOptions.title,reporterOptions.level+1) + '{:.no_toc}\n'
+            switch (reporterOptions.toc) {
+                case 'none':
+                    markdown += ''
+                    break;
+                case 'kramdown':
+                    markdown += '{:toc}\n\n'
+                    break;
+                default: //default
+                    markdown += generateTOC(runner.suite) 
+            }
+            markdown += buf + '<hr>\n';
             runner.markdown = markdown
             if (!reporterOptions.quiet) process.stdout.write(markdown) 
             super.epilogue();
@@ -189,10 +208,13 @@ const conf = function (opts) {
             if (!reporterOpts.filename) reporterOpts.filename = list[list.length-1];
             if (!reporterOpts.path) reporterOpts.path = temp_path;
         }
-        if (process.argv[i] == '--quiet' || process.argv[i] == '-q') {
+        if (process.argv[i] == '--quiet') {
             if (!reporterOpts.quiet) reporterOpts.quiet = true;
         }
-        if (process.argv[i] == '--level' || process.argv[i] == '-l') {
+        if (process.argv[i] == '--toc') {
+            if (!reporterOpts.toc) reporterOpts.toc = process.argv[i+1];
+        }
+        if (process.argv[i] == '--level') {
             if (!reporterOpts.level) reporterOpts.level = process.argv[i+1];
         }
         if (process.argv[i] == '--title' || process.argv[i] == '-t') {
@@ -202,9 +224,10 @@ const conf = function (opts) {
     // Check environmental variables as 'export MOCHA_FILENAME=customReportFilename'
     return {
       quiet: _getOption('quiet', reporterOpts, true, false),
-      path: _getOption('path', reporterOpts, false, './'),
+      toc: _getOption('toc', reporterOpts, false, 'default'),
+      path: _getOption('path', reporterOpts, false, './docs/'),
       filename: _getOption('filename', reporterOpts, false, null),
-      title: _getOption('title', reporterOpts, false, 'Unit Tests Results'),
+      title: _getOption('title', reporterOpts, false, null),
       level: parseInt(_getOption('level', reporterOpts, false, '1'))
     };
 };

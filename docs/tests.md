@@ -1,65 +1,9 @@
-<a name="module_crypto-keys"></a>
+# Unit Test Results
+{:.no_toc}
+{:toc}
 
-## crypto-keys
-Node.js javascript tool to generate ,encrypt and decrypt RSA and EC keys formated as PEM / DER.
-
-**Requires**: <code>module:NPM:asn1.js</code>, <code>module:NPM:des.js</code>, <code>module:NPM:elliptic</code>, <code>module:NPM:lodash.clonedeep</code>, <code>module:./jsbn.js:jsbn</code>  
-**Author**: Ademar Arvati  
-**License**: MIT  
-**Example**  
-```js
-const cryptoKeys = require('crypto-keys')
-```
-
-* [crypto-keys](#module_crypto-keys)
-    * [Key](#exp_module_crypto-keys--Key) ⏏
-        * [new Key(format, key)](#new_module_crypto-keys--Key_new)
-
-<a name="exp_module_crypto-keys--Key"></a>
-
-### Key ⏏
-**Kind**: Exported class  
-<a name="new_module_crypto-keys--Key_new"></a>
-
-#### new Key(format, key)
-Import or Create a Key.
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| format | <code>string</code> |  | Format of key to import ('der', 'pem' or 'jwk') or 'create' to create a new private key |
-| key | <code>string</code> \| <code>Uint8Array</code> \| <code>jwk</code> \| <code>Object</code> |  | String for pem key, Uint8Array for der key, {jwk} for jwk key or to create new key. |
-| [key.type] | <code>string</code> | <code>&quot;ec&quot;</code> | 'rsa' or 'ec' for key type to be created |
-| [key.namedCurve] | <code>string</code> | <code>&quot;P-256K&quot;</code> | Curve for EC type key creation 'P-256', 'P-384', 'P-521', 'P-256K' |
-| [key.modulusLength] | <code>integer</code> | <code>2048</code> | Modulus Length for RSA type key creation |
-| [key.publicExponent] | <code>integer</code> | <code>65537</code> | Public Exponent for RSA type key creation |
-
-**Example**  
-Creating a new private key
-```js
-privateKey = new cryptoKeys('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
-```
-Importing a pem public key (string)
-```js
-key = new cryptoKeys('pem', publicKey);
-```
-
-# Unit Tests Results
-
-* [Test 1](#test-1)
-    * [Teste 1.1](#test-1-teste-11)
-* [Node Module for Cryptographic Key Utilities in JavaScript](#node-module-for-cryptographic-key-utilities-in-javascript)
-    * [PEM RSA key Pair](#node-module-for-cryptographic-key-utilities-in-javascript-pem-rsa-key-pair)
-    * [PEM EC key Pair](#node-module-for-cryptographic-key-utilities-in-javascript-pem-ec-key-pair)
-* [Test 2](#test-2)
-    * [Teste 2.1](#test-2-teste-21)
-
-<a name=""></a>
-# 
-<a name="test-1"></a>
-## Test 1
-<a name="test-1-teste-11"></a>
-### Teste 1.1
+# Test 1
+## Teste 1.1
 My test ✓.
 1ms.
 
@@ -67,10 +11,9 @@ My test ✓.
 assert.isTrue(true);
 ```
 
-<a name="node-module-for-cryptographic-key-utilities-in-javascript"></a>
-## Node Module for Cryptographic Key Utilities in JavaScript
+# Node Module for Cryptographic Key Utilities in JavaScript
 Default Key Pair generation using crypto ✓.
-2ms.
+3ms.
 
 ```js
 // This will only work with higher versions of nodejs >=10
@@ -79,10 +22,9 @@ assert.isString(publicKey,'public key is not a string');
 assert.isString(privateKey,'public key is not a string');
 ```
 
-<a name="node-module-for-cryptographic-key-utilities-in-javascript-pem-rsa-key-pair"></a>
-### PEM RSA key Pair
+## PEM RSA key Pair
 Generating key pair ... ✓.
-4.848s.
+3.924s.
 
 ```js
 this._privateKey = new keyutil('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
@@ -128,14 +70,14 @@ assert.isTrue(this._privateKey.isEncrypted);
 ```
 
 Decrypt privateKey with wrong password ✓.
-25ms.
+21ms.
 
 ```js
 assert.throws(()=>this._privateKey.decrypt('just secret'),Error,'DecryptionFailure')
 ```
 
 Decrypt privateKey with password ✓.
-23ms.
+22ms.
 
 ```js
 assert.isTrue(this._privateKey.decrypt('top secret'));
@@ -149,7 +91,7 @@ assert.equal(this._privateKey.keyType, 'RSA');
 ```
 
 Export privateKey as publicKey ✓.
-29ms.
+20ms.
 
 ```js
 const options = {
@@ -172,14 +114,14 @@ assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),public
 ```
 
 Encrypt privateKey with password ✓.
-23ms.
+15ms.
 
 ```js
 assert.isTrue(this._privateKey.encrypt('top secret'));
 ```
 
 Sign String with encrypted private key and verify with public key ✓.
-5ms.
+4ms.
 
 ```js
 //console.info(crypto.getHashes() )
@@ -201,10 +143,9 @@ var verified = crypto.createVerify("RSA-SHA256")
 assert.isTrue(verified);
 ```
 
-<a name="node-module-for-cryptographic-key-utilities-in-javascript-pem-ec-key-pair"></a>
-### PEM EC key Pair
+## PEM EC key Pair
 Generating key pair ... ✓.
-104ms.
+87ms.
 
 ```js
 this._privateKey = new keyutil('create', {type:'ec', namedCurve:'P-256K'});
@@ -250,14 +191,14 @@ assert.isTrue(this._privateKey.isEncrypted);
 ```
 
 Decrypt privateKey with wrong password ✓.
-14ms.
+19ms.
 
 ```js
 assert.throws(()=>{this._privateKey.decrypt('just secret')},Error,'DecryptionFailure')
 ```
 
 Decrypt privateKey with password ✓.
-24ms.
+16ms.
 
 ```js
 assert.isTrue(this._privateKey.decrypt('top secret'));
@@ -271,7 +212,7 @@ assert.equal(this._privateKey.keyType, 'EC');
 ```
 
 Export privateKey as publicKey ✓.
-52ms.
+25ms.
 
 ```js
 const options = {
@@ -294,14 +235,14 @@ assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),public
 ```
 
 Encrypt privateKey with password ✓.
-31ms.
+12ms.
 
 ```js
 assert.isTrue(this._privateKey.encrypt('new secret'));
 ```
 
 Export privateKey with password ✓.
-5ms.
+2ms.
 
 ```js
 privateKey = new keyutil('der', this._privateKey.der); 
@@ -336,12 +277,10 @@ async () => {
         }
 ```
 
-<a name="test-2"></a>
-## Test 2
-<a name="test-2-teste-21"></a>
-### Teste 2.1
+# Test 2
+## Teste 2.1
 My test 2 ✓.
-0ms.
+5ms.
 
 ```js
 assert.isTrue(true);
