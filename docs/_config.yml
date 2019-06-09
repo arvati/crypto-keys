@@ -5,8 +5,6 @@ description: Node Javascript Tool to generate ,encrypt and decrypt RSA and EC ke
 aux_links:
   "Crypto-Keys on GitHub":
     - "//github.com/arvati/crypto-keys"
-color_scheme: "dark"
-
 
 ga_tracking: UA-18418059-2
 plugins:
