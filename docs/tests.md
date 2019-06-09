@@ -1,4 +1,6 @@
 # Unit Test Results
+{:.no_toc}
+
 * TOC
 {:toc}
 
