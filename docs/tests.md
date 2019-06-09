@@ -1,5 +1,4 @@
 # Unit Test Results
-{:.no_toc}
 {:toc}
 
 # Test 1
