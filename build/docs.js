@@ -11,7 +11,8 @@ layout: default
 title: Test Results
 nav_order: 3
 permalink: /tests
----`
+---
+`
 // link = https://github.com/mochajs/mocha/wiki/Third-party-reporters
 var mocha = new Mocha({
     reporter: mocha2md,
@@ -31,10 +32,11 @@ fsp.readdir(testDir)
 .then( () => new Promise((resolve,reject)=>{
         var suiteRun = mocha.run( (failures) => {
             if (failures) reject(suiteRun.markdown)
-            else resolve(suiteRun.markdown)
+            else resolve(failures,suiteRun.markdown)
         })
 }))
 .then((markdown) => console.log('Resulted markdown could be used here'))
+.catch((failures,markdown) => console.log('Resulted markdown could be used here too'))
 
 // docs file
 const prepend = 
@@ -43,7 +45,8 @@ layout: default
 title: API
 nav_order: 2
 permalink: /docs
----`
+---
+`
 const docFile = './docs/docs.md'
 jsdoc2md.render({files: './lib/*.js'})
 .then((rendered) => fsp.writeFile(docFile, prepend + '\n' + rendered))
