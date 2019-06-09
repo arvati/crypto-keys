@@ -19,14 +19,6 @@ const keyutil = require('../lib')
 //     'P-521': 'p521'
 //     'P-256K': 'secp256k1' <= only this at node crypto
 
-describe('Test 1', () => {
-    describe('Teste 1.1', () => {
-        it('My test', () => {
-            assert.isTrue(true);
-        })
-    })
-},true)
-
 describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
 
     const getKeyPair = (type = "ec", options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}) => {

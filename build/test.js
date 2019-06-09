@@ -9,8 +9,6 @@ var testDir = "./test/"
 fsp.readdir(testDir)
 .then((files) => {
     files.filter((file) => path.extname(file) === '.js')
-    .forEach( (file) => {
-        mocha.addFile(path.join(testDir, file));
-    })
-    mocha.run((failures) => {})
+    .forEach( (file) => mocha.addFile(path.join(testDir, file)))
+    mocha.run((failures) => process.exitCode = (failures) ? 1 : 0)
 })

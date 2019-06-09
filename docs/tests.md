@@ -10,15 +10,6 @@ permalink: /tests
 - TOC
 {:toc}
 
-# Test 1
-## Teste 1.1
-My test ✓.
-1ms.
-
-```js
-assert.isTrue(true);
-```
-
 # Node Module for Cryptographic Key Utilities in JavaScript
 Default Key Pair generation using crypto ✓.
 3ms.
@@ -32,7 +23,7 @@ assert.isString(privateKey,'public key is not a string');
 
 ## PEM RSA key Pair
 Generating key pair ... ✓.
-8.225s.
+3.471s.
 
 ```js
 this._privateKey = new keyutil('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
@@ -78,28 +69,28 @@ assert.isTrue(this._privateKey.isEncrypted);
 ```
 
 Decrypt privateKey with wrong password ✓.
-18ms.
+19ms.
 
 ```js
 assert.throws(()=>this._privateKey.decrypt('just secret'),Error,'DecryptionFailure')
 ```
 
 Decrypt privateKey with password ✓.
-16ms.
+31ms.
 
 ```js
 assert.isTrue(this._privateKey.decrypt('top secret'));
 ```
 
 Key type of privateKey is RSA ✓.
-0ms.
+1ms.
 
 ```js
 assert.equal(this._privateKey.keyType, 'RSA');
 ```
 
 Export privateKey as publicKey ✓.
-24ms.
+44ms.
 
 ```js
 const options = {
@@ -122,14 +113,14 @@ assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),public
 ```
 
 Encrypt privateKey with password ✓.
-20ms.
+28ms.
 
 ```js
 assert.isTrue(this._privateKey.encrypt('top secret'));
 ```
 
 Sign String with encrypted private key and verify with public key ✓.
-3ms.
+7ms.
 
 ```js
 //console.info(crypto.getHashes() )
@@ -153,7 +144,7 @@ assert.isTrue(verified);
 
 ## PEM EC key Pair
 Generating key pair ... ✓.
-106ms.
+126ms.
 
 ```js
 this._privateKey = new keyutil('create', {type:'ec', namedCurve:'P-256K'});
@@ -199,14 +190,14 @@ assert.isTrue(this._privateKey.isEncrypted);
 ```
 
 Decrypt privateKey with wrong password ✓.
-11ms.
+10ms.
 
 ```js
 assert.throws(()=>{this._privateKey.decrypt('just secret')},Error,'DecryptionFailure')
 ```
 
 Decrypt privateKey with password ✓.
-19ms.
+15ms.
 
 ```js
 assert.isTrue(this._privateKey.decrypt('top secret'));
@@ -220,7 +211,7 @@ assert.equal(this._privateKey.keyType, 'EC');
 ```
 
 Export privateKey as publicKey ✓.
-17ms.
+64ms.
 
 ```js
 const options = {
@@ -243,14 +234,14 @@ assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),public
 ```
 
 Encrypt privateKey with password ✓.
-16ms.
+12ms.
 
 ```js
 assert.isTrue(this._privateKey.encrypt('new secret'));
 ```
 
 Export privateKey with password ✓.
-2ms.
+3ms.
 
 ```js
 privateKey = new keyutil('der', this._privateKey.der); 
@@ -287,7 +278,14 @@ async () => {
 
 # Test 2
 ## Teste 2.1
-My test 2 ✓.
+My test 2.1.1 ✓.
+0ms.
+
+```js
+assert.isTrue(true);
+```
+
+My test 2.1.2 ✓.
 0ms.
 
 ```js

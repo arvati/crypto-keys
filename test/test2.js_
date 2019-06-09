@@ -1,0 +1,34 @@
+const assert = require('chai').assert;
+
+describe('Test 2', () => {
+
+    beforeEach('outer describe - beforeEach', () => {
+        console.log('outer describe - beforeEach');
+    });
+    describe('Teste 2.1', () => {
+
+        before('before hook', () => {
+            console.log('runs before all tests in this file regardless where this line is defined')
+        });
+
+        after('after hook', () => {
+            console.log('runs after all tests in this file')
+        });
+
+        beforeEach('before each hook', () => {
+            console.log('runs before each test in this block')
+        });
+
+        afterEach('after each hook', () => {
+            console.log('runs after each test in this block')
+        });
+
+        it('My test 2.1.1', () => {
+            assert.isTrue(true);
+        })
+
+        it('My test 2.1.2', () => {
+            assert.isTrue(true);
+        })
+    })
+},true)

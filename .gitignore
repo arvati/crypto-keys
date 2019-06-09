@@ -65,4 +65,5 @@ typings/
 .bundle
 .sass-cache
 _site
+docs/_site
 Gemfile.lock
