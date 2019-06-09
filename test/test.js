@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const crypto = require('crypto');
-const keyutil = require('../lib/')
+const keyutil = require('../lib')
 
 // EXPORT OPTIONS
 // options.outputPublic : boolean - get public key derived from private key
