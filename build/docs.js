@@ -20,7 +20,7 @@ var mocha = new Mocha({
         title:"Unit Test Results", 
         toc:'kramdown', 
         filename:'tests.md',
-        append: frontmatter
+        prepend: frontmatter
     }
 });
 const testDir = "./test/"
