@@ -61,40 +61,37 @@ class mocha2md extends Base {
         var level = reporterOptions.level
 
         const title = (str, level) => Array(level).join('#') + ' ' + str + '\n';
-        const mapTOC = (suite, obj) => {
+        const mapTOC = (suite, obj = {}) => {
             var ret = obj;
             var key = SUITE_PREFIX + suite.title;
-            obj = obj[key] = obj[key] || { suite: suite };
+            obj = obj[key] = obj[key] || { suite };
             suite.suites.forEach((suite) => {mapTOC(suite, obj)});
             return ret;
         }
-        const stringifyTOC = (obj, level) => {
-            ++level;
+        const stringifyTOC = (obj, level = 0) => {
+            //console.log(obj)
             var buf = '';
             var link;
             for (var key in obj) {
-            if (key === 'suite') {
-                continue;
-            }
-            if (key !== SUITE_PREFIX) {
-                link = ' - [' + key.substring(1) + ']';
-                link += '(#' + utils.slug(obj[key].suite.fullTitle()) + ')\n';
-                buf += Array(level).join('  ') + link;
-            }
-            buf += stringifyTOC(obj[key], level);
+                if (key === 'suite') {
+                    continue;
+                }
+                if (key !== SUITE_PREFIX) {
+                    link = '* [' + key.substring(1) + ']';
+                    link += '(#' + utils.slug(obj[key].suite.fullTitle()) + ')\n';
+                    buf += Array(level).join('    ') + link;
+                }
+                buf += stringifyTOC(obj[key], level+1);
             }
             return buf;
         }
-        const generateTOC = (suite) => {
-            var obj = mapTOC(suite, {});
-            return stringifyTOC(obj, reporterOptions.level) + '\n';
-        }
-        //generateTOC(runner.suite);
+        const generateTOC = (suite) => '\n' + stringifyTOC(mapTOC(suite)) + '\n';
+
         runner.on(EVENT_SUITE_BEGIN, (suite) => {
             ++level;
             var slug = utils.slug(suite.fullTitle());
             buf += '<a name="' + slug + '"></a>' + '\n';
-            buf += suite.root ? title(suite.title, level+1) :  title(suite.title, level);
+            buf += title(suite.title, level);
         });
         runner.on(EVENT_TEST_PASS, (test) => {
             if (test.duration > 1000) {
