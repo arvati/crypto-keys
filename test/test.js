@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const crypto = require('crypto');
-const keyutil = require('../lib')
+const cryptoKeys = require('../lib')
 
 // EXPORT OPTIONS
 // options.outputPublic : boolean - get public key derived from private key
@@ -34,8 +34,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
 
       describe('PEM RSA key Pair', () => {
         it('Generating key pair ...', () => {
-            this._privateKey = new keyutil('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
-            this._publicKey = new keyutil('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
+            this._privateKey = new cryptoKeys('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
+            this._publicKey = new cryptoKeys('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
             this._privateKey.encrypt('top secret')
             assert.isObject(this._publicKey,'public key is not a object');
             assert.isObject(this._privateKey, 'private key is not a object');
@@ -82,7 +82,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                         }
                     }
                     const {publicKey, privateKey} = getKeyPair('rsa', options)
-                    key = new keyutil('pem', privateKey);
+                    key = new cryptoKeys('pem', privateKey);
                     key.decrypt('top secret')
                     assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
                 })
@@ -112,11 +112,13 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
     })
     describe('PEM EC key Pair', () => {
         it('Generating key pair ...', () => {
-            this._privateKey = new keyutil('create', {type:'ec', namedCurve:'P-256K'});
-            this._publicKey = new keyutil('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
-            this._privateKey.encrypt('top secret')
-            assert.isObject(this._publicKey,'public key is not a object');
-            assert.isObject(this._privateKey,'public key is not a object');
+            // this._privateKey = new cryptoKeys('create', {type:'ec', namedCurve:'P-256K'});
+            // this._privateKey.encrypt('top secret')
+            const {publicKey, privateKey} = getKeyPair()
+            this._privateKey = new cryptoKeys('pem', privateKey);
+            this._publicKey = cryptoKeys.getPublicKey(privateKey)
+            assert.isObject(this._privateKey,'private key is not a object');
+            assert.isTrue(this._publicKey instanceof cryptoKeys, 'public key is not a cryptoKeys object');
         })
         describe('Working with publicKey', () => {
                 it('isPrivate of publicKey is False', () => {
@@ -160,7 +162,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                         }
                     }
                     const {publicKey, privateKey} = getKeyPair('ec', options)
-                    key = new keyutil('pem', privateKey);
+                    key = new cryptoKeys('pem', privateKey);
                     key.decrypt('top secret')
                     assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
                 })
@@ -168,8 +170,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                     assert.isTrue(this._privateKey.encrypt('new secret').isEncrypted);
                 });
                 it('Export privateKey with password', () => {
-                    privateKey = new keyutil('der', this._privateKey.der); 
-                    originalPrivateKey = new keyutil('pem', this._privateKey.pem); 
+                    privateKey = new cryptoKeys('der', this._privateKey.der); 
+                    originalPrivateKey = new cryptoKeys('pem', this._privateKey.pem); 
                     assert.deepEqual(privateKey.der,originalPrivateKey.der);
                     assert.throws(()=>{this._privateKey.jwk},Error,'Decryption Required')
                 });
