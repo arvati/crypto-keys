@@ -28,11 +28,8 @@ fsp.readdir(testDir)
 .then((files) => files.filter((file) => path.extname(file) === '.js_')
     .forEach( (file) => mocha.addFile(path.join(testDir, file)))
 )
-.then( () => new Promise((resolve,reject)=>{
-    var suiteRun = mocha.run( (failures) => {
-        if (failures) reject(suiteRun.markdown)
-        else resolve(failures,suiteRun.markdown)
-    })
+.then( () => new Promise((resolve,reject) => {
+    var suiteRun = mocha.run( (failures) => resolve(failures,suiteRun.markdown))
 }))
 .then((markdown) => console.log('Resulted markdown could be used here'))
-.catch((failures,markdown) => console.log('Resulted markdown could be used here too'))
+.catch((err) => console.log)

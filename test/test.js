@@ -40,7 +40,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.isObject(this._publicKey,'public key is not a object');
             assert.isObject(this._privateKey, 'private key is not a object');
         }).timeout(10000);
-            describe('Working with publicKey'), () => {
+            describe('Working with publicKey', () => {
                 it('isPrivate of publicKey is False', () => {
                     assert.isFalse(this._publicKey.isPrivate);
                 });
@@ -50,8 +50,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                 it('Key type of publicKey is RSA', () => {
                     assert.equal(this._publicKey.keyType, 'RSA');
                 });
-            }
-            describe('Working with privateKey'), () => {
+            })
+            describe('Working with privateKey', () => {
                 it('isPrivate of privateKey is True', () => {
                     assert.isTrue(this._privateKey.isPrivate);
                 });
@@ -87,28 +87,28 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                     assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
                 })
                 it('Encrypt privateKey with password', () => {
-                    assert.isFalse(this._privateKey.encrypt('top secret').isEncrypted);
+                    assert.isTrue(this._privateKey.encrypt('top secret').isEncrypted);
                 });
-            }
-        it('Sign String with encrypted private key and verify with public key', () => {
-            //console.info(crypto.getHashes() )
-            const value = 'My text to encrypt and verify'
-            const privateKey = this._privateKey.pem;
-            var signature = crypto.createSign("RSA-SHA256").
-                update(value).
-                sign({key: privateKey,
-                    passphrase: 'top secret',
-                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
-                    saltLength:10}, "base64");
-            const publicKey = this._publicKey.pem;
-            var verified = crypto.createVerify("RSA-SHA256")
-                .update(value)
-                .verify({key: publicKey, 
-                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
-                    saltLength:10}, 
-                    signature, "base64");
-            assert.isTrue(verified);
-        })
+                it('Sign String with encrypted private key and verify with public key', () => {
+                    //console.info(crypto.getHashes())
+                    const value = 'My text to encrypt and verify'
+                    const privateKey = this._privateKey.pem;
+                    var signature = crypto.createSign("RSA-SHA256").
+                        update(value).
+                        sign({key: privateKey,
+                            passphrase: 'top secret',
+                            padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                            saltLength:10}, "base64");
+                    const publicKey = this._publicKey.pem;
+                    var verified = crypto.createVerify("RSA-SHA256")
+                        .update(value)
+                        .verify({key: publicKey, 
+                            padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                            saltLength:10}, 
+                            signature, "base64");
+                    assert.isTrue(verified);
+                })
+            })
     })
     describe('PEM EC key Pair', () => {
         it('Generating key pair ...', () => {
@@ -118,7 +118,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
             assert.isObject(this._publicKey,'public key is not a object');
             assert.isObject(this._privateKey,'public key is not a object');
         })
-        describe('Working with publicKey'), () => {
+        describe('Working with publicKey', () => {
                 it('isPrivate of publicKey is False', () => {
                     assert.isFalse(this._publicKey.isPrivate);
                 });
@@ -128,8 +128,8 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                 it('Key type of publicKey is EC', () => {
                     assert.equal(this._publicKey.keyType, 'EC');
                 });
-            }
-            describe('Working with privateKey'), () => {
+            })
+            describe('Working with privateKey', () => {
                 it('isPrivate of privateKey is True', () => {
                     assert.isTrue(this._privateKey.isPrivate);
                 });
@@ -140,7 +140,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                     assert.throws(()=>{this._privateKey.decrypt('just secret')},Error,'Decryption Failure')
                 });
                 it('Decrypt privateKey with password', () => {
-                    assert.isTrue(this._privateKey.decrypt('top secret'));
+                    assert.isFalse(this._privateKey.decrypt('top secret').isEncrypted);
                 });
                 it('Key type of privateKey is EC', () => {
                     assert.equal(this._privateKey.keyType, 'EC');
@@ -165,7 +165,7 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                     assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
                 })
                 it('Encrypt privateKey with password', () => {
-                    assert.isTrue(this._privateKey.encrypt('new secret'));
+                    assert.isTrue(this._privateKey.encrypt('new secret').isEncrypted);
                 });
                 it('Export privateKey with password', () => {
                     privateKey = new keyutil('der', this._privateKey.der); 
@@ -173,26 +173,26 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
                     assert.deepEqual(privateKey.der,originalPrivateKey.der);
                     assert.throws(()=>{this._privateKey.jwk},Error,'Decryption Required')
                 });
-            }
-        it('Sign String with encrypted private key and verify with public key', async () => {
-            //this._privateKey.encrypt('new secret')
-            const value = 'My text to encrypt and verify'
-            const privateKey = this._privateKey.pem;
-            var signature = crypto.createSign("RSA-SHA256").
-                update(value).
-                sign({key: privateKey,
-                    passphrase: 'new secret',
-                    format:'pem',
-                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
-                    saltLength:10}, "base64");
-            const publicKey = this._publicKey.pem;
-            var verified = crypto.createVerify("RSA-SHA256")
-                .update(value)
-                .verify({key: publicKey, 
-                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
-                    saltLength:10}, 
-                    signature, "base64");
-            assert.isTrue(verified);
-        })
+                it('Sign String with encrypted private key and verify with public key', async () => {
+                    //this._privateKey.encrypt('new secret')
+                    const value = 'My text to encrypt and verify'
+                    const privateKey = this._privateKey.pem;
+                    var signature = crypto.createSign("RSA-SHA256").
+                        update(value).
+                        sign({key: privateKey,
+                            passphrase: 'new secret',
+                            format:'pem',
+                            padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                            saltLength:10}, "base64");
+                    const publicKey = this._publicKey.pem;
+                    var verified = crypto.createVerify("RSA-SHA256")
+                        .update(value)
+                        .verify({key: publicKey, 
+                            padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                            saltLength:10}, 
+                            signature, "base64");
+                    assert.isTrue(verified);
+                })
+            })
     })
 },true);

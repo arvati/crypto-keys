@@ -11,30 +11,31 @@ permalink: /tests
 {:toc}
 
 # Node Module for Cryptographic Key Utilities in JavaScript
-Default Key Pair generation using crypto ✓.
-3ms.
+Default Key Pair generation using node crypto ✓.
+2ms.
 
 ```js
 // This will only work with higher versions of nodejs >=10
 const {publicKey, privateKey} = getKeyPair()
 assert.isString(publicKey,'public key is not a string');
-assert.isString(privateKey,'public key is not a string');
+assert.isString(privateKey,'private key is not a string');
 ```
 
 ## PEM RSA key Pair
 Generating key pair ... ✓.
-3.426s.
+3.598s.
 
 ```js
 this._privateKey = new keyutil('create', {type:'rsa', modulusLength:2048, publicExponent:65537});
 this._publicKey = new keyutil('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
 this._privateKey.encrypt('top secret')
 assert.isObject(this._publicKey,'public key is not a object');
-assert.isObject(this._privateKey,'public key is not a object');
+assert.isObject(this._privateKey, 'private key is not a object');
 ```
 
+### Working with publicKey
 isPrivate of publicKey is False ✓.
-0ms.
+1ms.
 
 ```js
 assert.isFalse(this._publicKey.isPrivate);
@@ -54,6 +55,7 @@ Key type of publicKey is RSA ✓.
 assert.equal(this._publicKey.keyType, 'RSA');
 ```
 
+### Working with privateKey
 isPrivate of privateKey is True ✓.
 0ms.
 
@@ -68,18 +70,18 @@ isEncrypted of privateKey is True ✓.
 assert.isTrue(this._privateKey.isEncrypted);
 ```
 
-Decrypt privateKey with wrong password ✖.
-32ms.
-
-```js
-assert.throws(()=>this._privateKey.decrypt('just secret'),Error,'DecryptionFailure')
-```
-
-Decrypt privateKey with password ✖.
+Decrypt privateKey with wrong password ✓.
 27ms.
 
 ```js
-assert.isTrue(this._privateKey.decrypt('top secret'));
+assert.throws(()=>this._privateKey.decrypt('just secret'),Error,'Decryption Failure')
+```
+
+Decrypt privateKey with password ✓.
+25ms.
+
+```js
+assert.isFalse(this._privateKey.decrypt('top secret').isEncrypted);
 ```
 
 Key type of privateKey is RSA ✓.
@@ -90,7 +92,7 @@ assert.equal(this._privateKey.keyType, 'RSA');
 ```
 
 Export privateKey as publicKey ✓.
-37ms.
+65ms.
 
 ```js
 const options = {
@@ -112,18 +114,18 @@ key.decrypt('top secret')
 assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
 ```
 
-Encrypt privateKey with password ✖.
-24ms.
+Encrypt privateKey with password ✓.
+23ms.
 
 ```js
-assert.isTrue(this._privateKey.encrypt('top secret'));
+assert.isTrue(this._privateKey.encrypt('top secret').isEncrypted);
 ```
 
 Sign String with encrypted private key and verify with public key ✓.
-5ms.
+4ms.
 
 ```js
-//console.info(crypto.getHashes() )
+//console.info(crypto.getHashes())
 const value = 'My text to encrypt and verify'
 const privateKey = this._privateKey.pem;
 var signature = crypto.createSign("RSA-SHA256").
@@ -144,7 +146,7 @@ assert.isTrue(verified);
 
 ## PEM EC key Pair
 Generating key pair ... ✓.
-132ms.
+102ms.
 
 ```js
 this._privateKey = new keyutil('create', {type:'ec', namedCurve:'P-256K'});
@@ -154,6 +156,7 @@ assert.isObject(this._publicKey,'public key is not a object');
 assert.isObject(this._privateKey,'public key is not a object');
 ```
 
+### Working with publicKey
 isPrivate of publicKey is False ✓.
 0ms.
 
@@ -175,6 +178,7 @@ Key type of publicKey is EC ✓.
 assert.equal(this._publicKey.keyType, 'EC');
 ```
 
+### Working with privateKey
 isPrivate of privateKey is True ✓.
 0ms.
 
@@ -183,24 +187,24 @@ assert.isTrue(this._privateKey.isPrivate);
 ```
 
 isEncrypted of privateKey is True ✓.
-0ms.
+1ms.
 
 ```js
 assert.isTrue(this._privateKey.isEncrypted);
 ```
 
-Decrypt privateKey with wrong password ✖.
-18ms.
+Decrypt privateKey with wrong password ✓.
+19ms.
 
 ```js
-assert.throws(()=>{this._privateKey.decrypt('just secret')},Error,'DecryptionFailure')
+assert.throws(()=>{this._privateKey.decrypt('just secret')},Error,'Decryption Failure')
 ```
 
-Decrypt privateKey with password ✖.
-25ms.
+Decrypt privateKey with password ✓.
+19ms.
 
 ```js
-assert.isTrue(this._privateKey.decrypt('top secret'));
+assert.isFalse(this._privateKey.decrypt('top secret').isEncrypted);
 ```
 
 Key type of privateKey is EC ✓.
@@ -211,7 +215,7 @@ assert.equal(this._privateKey.keyType, 'EC');
 ```
 
 Export privateKey as publicKey ✓.
-34ms.
+26ms.
 
 ```js
 const options = {
@@ -233,21 +237,21 @@ key.decrypt('top secret')
 assert.equal((key.export('pem', {outputPublic: true})).replace(/\n$/, ""),publicKey.replace(/\n$/, ""))
 ```
 
-Encrypt privateKey with password ✖.
-17ms.
+Encrypt privateKey with password ✓.
+15ms.
 
 ```js
-assert.isTrue(this._privateKey.encrypt('new secret'));
+assert.isTrue(this._privateKey.encrypt('new secret').isEncrypted);
 ```
 
-Export privateKey with password ✖.
-4ms.
+Export privateKey with password ✓.
+3ms.
 
 ```js
 privateKey = new keyutil('der', this._privateKey.der); 
 originalPrivateKey = new keyutil('pem', this._privateKey.pem); 
 assert.deepEqual(privateKey.der,originalPrivateKey.der);
-assert.throws(()=>{this._privateKey.jwk},Error,'DecryptionRequired')
+assert.throws(()=>{this._privateKey.jwk},Error,'Decryption Required')
 ```
 
 Sign String with encrypted private key and verify with public key ✓.
@@ -255,25 +259,25 @@ Sign String with encrypted private key and verify with public key ✓.
 
 ```js
 async () => {
-            //this._privateKey.encrypt('new secret')
-            const value = 'My text to encrypt and verify'
-            const privateKey = this._privateKey.pem;
-            var signature = crypto.createSign("RSA-SHA256").
-                update(value).
-                sign({key: privateKey,
-                    passphrase: 'new secret',
-                    format:'pem',
-                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
-                    saltLength:10}, "base64");
-            const publicKey = this._publicKey.pem;
-            var verified = crypto.createVerify("RSA-SHA256")
-                .update(value)
-                .verify({key: publicKey, 
-                    padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
-                    saltLength:10}, 
-                    signature, "base64");
-            assert.isTrue(verified);
-        }
+                    //this._privateKey.encrypt('new secret')
+                    const value = 'My text to encrypt and verify'
+                    const privateKey = this._privateKey.pem;
+                    var signature = crypto.createSign("RSA-SHA256").
+                        update(value).
+                        sign({key: privateKey,
+                            passphrase: 'new secret',
+                            format:'pem',
+                            padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                            saltLength:10}, "base64");
+                    const publicKey = this._publicKey.pem;
+                    var verified = crypto.createVerify("RSA-SHA256")
+                        .update(value)
+                        .verify({key: publicKey, 
+                            padding:crypto.constants.RSA_PKCS1_PSS_PADDING, 
+                            saltLength:10}, 
+                            signature, "base64");
+                    assert.isTrue(verified);
+                }
 ```
 
 

@@ -21,7 +21,8 @@
   "main": "lib/index.js",
   "scripts": {
     "docs": "node build/docs.js",
-    "test": "node build/test2.js",
+    "test2": "node build/test2.js",
+    "test": "node build/test.js",
     "git": "git add . && git commit -m",
     "postgit": "git push --all"
   },

@@ -66,7 +66,7 @@ Get Jwk key type of decrypted keys
 <a name="module_crypto-keys--Key+jwkThumbprint"></a>
 
 #### key.jwkThumbprint ⇒
-Get Jwk Thumbprint of the key with default parameters alg='SHA-256', output='binary'
+Get Jwk Thumbprint of the decrypted key with default parameters alg='SHA-256', output='binary'
 
 **Kind**: instance property of [<code>Key</code>](#exp_module_crypto-keys--Key)  
 **Returns**: Jwk Thumbprint of the key  
@@ -80,14 +80,14 @@ Export Key as format.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [format] | <code>string</code> | <code>&quot;&#x27;jwk&#x27;&quot;</code> | Format of key to export ('der', 'pem' or 'jwk') |
+| [format] | <code>string</code> | <code>&quot;jwk&quot;</code> | Format of key to export ('der', 'pem' or 'jwk') |
 | [options] | <code>Object</code> | <code>{}</code> | Options to export key into format only with decrypted keys |
 | [options.encryptParams] | <code>Object</code> | <code>{}</code> | Options to export encrypted prvate key for 'pem' and 'der' formats |
-| [options.encryptParams.passphrase] | <code>string</code> | <code>&quot;&#x27;&#x27;&quot;</code> | Passphrase to encrypt private key |
-| [options.encryptParams.algorithm] | <code>string</code> | <code>&quot;&#x27;pbes2&#x27;&quot;</code> | if 'pbes2' only pbkdf2 and salt length of 8 is available, choose from 'pbeWithMD5AndDES-CBC', 'pbeWithSHA1AndDES-CBC', 'pbes2' |
+| [options.encryptParams.passphrase] | <code>string</code> |  | Passphrase to encrypt private key |
+| [options.encryptParams.algorithm] | <code>string</code> | <code>&quot;pbes2&quot;</code> | if 'pbes2' only pbkdf2 and salt length of 8 is available, choose from 'pbeWithMD5AndDES-CBC', 'pbeWithSHA1AndDES-CBC', 'pbes2' |
 | [options.encryptParams.iterationCount] | <code>integer</code> | <code>2048</code> | Iteration count to use for salt algorithm |
-| [options.encryptParams.cipher] | <code>string</code> | <code>&quot;&#x27;aes256-cbc&#x27;&quot;</code> | Cipher when algorithm is 'pbes2', choose from 'des-ede3-cbc', 'aes128-cbc', 'aes192-cbc', 'aes256-cbc' |
-| [options.encryptParams.prf] | <code>string</code> | <code>&quot;&#x27;hmacWithSHA256&#x27;&quot;</code> | Prf when algorithm is 'pbes2', choose from 'hmacWithSHA1', 'hmacWithSHA256', 'hmacWithSHA384', 'hmacWithSHA512' |
+| [options.encryptParams.cipher] | <code>string</code> | <code>&quot;aes256-cbc&quot;</code> | Cipher when algorithm is 'pbes2', choose from 'des-ede3-cbc', 'aes128-cbc', 'aes192-cbc', 'aes256-cbc' |
+| [options.encryptParams.prf] | <code>string</code> | <code>&quot;hmacWithSHA256&quot;</code> | Prf when algorithm is 'pbes2', choose from 'hmacWithSHA1', 'hmacWithSHA256', 'hmacWithSHA384', 'hmacWithSHA512' |
 | [options.outputPublic] | <code>boolean</code> |  | True to Export public key from private Key or undefined/False to maintain actual format |
 | [options.compact] | <code>boolean</code> | <code>false</code> | Export compact key for 'EC' type keys |
 
@@ -127,6 +127,6 @@ Get Jwk Thumbprint of decrypted keys
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [alg] | <code>string</code> | <code>&quot;&#x27;SHA-256&#x27;&quot;</code> | Hash algorithm, choose from 'SHA-256','SHA-384','SHA-512' and 'SHA-1, 'MD5' that SHOULD NOT USE |
-| [output] | <code>string</code> | <code>&quot;&#x27;binary&#x27;&quot;</code> | Output Format 'binary', 'hex', 'base64' |
+| [alg] | <code>string</code> | <code>&quot;SHA-256&quot;</code> | Hash algorithm, choose from 'SHA-256','SHA-384','SHA-512' and 'SHA-1, 'MD5' that SHOULD NOT USE |
+| [output] | <code>string</code> | <code>&quot;binary&quot;</code> | Output Format 'binary', 'hex', 'base64' |
 
