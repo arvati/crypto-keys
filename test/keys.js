@@ -64,21 +64,29 @@ describe('Test creation of Private and Public Keys', () => {
                 it('Importing ' + name + ' Private Key', () => {
                     self_.cryptoPrivateKey = new cryptoKeys('pem', self_.privateKey);
                     assert.instanceOf(self_.cryptoPrivateKey, cryptoKeys, 'private key is not a cryptoKeys object');
+                    assert.isTrue(self_.cryptoPrivateKey.isPrivate, 'not a private key')
                 })
 
                 it('Exporting ' + name + ' Private Key', () => {
-                    PrivateKey = self_.cryptoPrivateKey.der
-                    assert.instanceOf(PrivateKey, Uint8Array, 'private key is not a Uint8Array')
+                    privateKey = self_.cryptoPrivateKey.der
+                    cryptoPrivateKey = new cryptoKeys('der', privateKey);
+                    assert.instanceOf(privateKey, Uint8Array, 'private key is not a Uint8Array')
+                    assert.instanceOf(cryptoPrivateKey, cryptoKeys, 'private key is not a cryptoKeys object');
+                    assert.equal((self_.cryptoPrivateKey.pem).replace(/\n$/, ""),self_.privateKey .replace(/\n$/, ""), "private pem key is equal original private pem")
                 })
 
                 it('Importing ' + name + ' Public Key', () => {
                     self_.cryptoPublicKey = new cryptoKeys('pem', self_.publicKey);
                     assert.instanceOf(self_.cryptoPublicKey, cryptoKeys, 'public key is not a cryptoKeys object');
+                    assert.isFalse(self_.cryptoPublicKey.isPrivate, 'not a public key')
                 })
 
                 it('Exporting ' + name + ' Public Key', () => {
-                    PublicKey = self_.cryptoPublicKey.der
-                    assert.instanceOf(PublicKey, Uint8Array, 'public key is not a Uint8Array')
+                    publicKey = self_.cryptoPublicKey.der
+                    cryptoPublicKey = new cryptoKeys('der', publicKey);
+                    assert.instanceOf(publicKey, Uint8Array, 'public key is not a Uint8Array')
+                    assert.instanceOf(cryptoPublicKey, cryptoKeys, 'public key is not a cryptoKeys object');
+                    assert.equal((self_.cryptoPublicKey.pem).replace(/\n$/, ""),self_.publicKey .replace(/\n$/, ""), "public pem key is equal original public pem")
                 })
 
                 it('Generating ' + name + ' key public from private key', () => {
