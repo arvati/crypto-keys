@@ -48,12 +48,17 @@ describe('Test creation of Private and Public Keys', () => {
 
     types.forEach((value, name) => {
             describe('Creation of ' + name + ' Keys', () => {
-                it('EC Key Pair generation using node crypto', () => {
+                it(name + ' Key Pair generation using node crypto', () => {
                     const {publicKey, privateKey} = self_.getKeyPair(name, value)
                     self_.publicKey = publicKey
                     self_.privateKey = privateKey
                     assert.isString(publicKey,'public key is not a string');
                     assert.isString(privateKey,'private key is not a string');
+                })
+
+                it('Check key type created is ' + name, () => {
+                    type = new cryptoKeys('pem', self_.privateKey).keyType
+                    assert.deepEqual(type, name.toUpperCase(),'not correct key type to test')
                 })
 
                 it('Importing ' + name + ' Private Key', () => {
