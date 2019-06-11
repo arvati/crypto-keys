@@ -46,6 +46,27 @@ describe('Test creation of Private and Public Keys', () => {
         }
     })
 
+    it('Test import of EC DER key', () => {
+        const {publicKey, privateKey} = self_.getKeyPair('ec', {
+            modulusLength: 4096, 
+            namedCurve: 'secp256k1', 
+            publicKeyEncoding: {
+                type: 'spki', 
+                format: 'der'
+            }, 
+            privateKeyEncoding: {
+                type: 'pkcs8', 
+                format: 'der'
+                // cipher: 'aes-256-cbc',
+                // passphrase: 'top secret'
+            }
+        })
+        cryptoPrivateKey = new cryptoKeys('der', privateKey);
+        cryptoPublicKey = new cryptoKeys('der', publicKey);
+        assert.deepEqual(cryptoPrivateKey.der,new Uint8Array(privateKey),'Exported Der must be equal original Der')
+        assert.deepEqual(Buffer.from(cryptoPrivateKey.der),privateKey,'Exported Der must be equal original Der')
+    })
+
     types.forEach((value, name) => {
             describe('Creation of ' + name + ' Keys', () => {
                 it(name + ' Key Pair generation using node crypto', () => {
