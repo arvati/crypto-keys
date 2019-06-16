@@ -21,7 +21,11 @@ const cryptoKeys = require('../lib')
 
 describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
 
-    const getKeyPair = (type = "ec", options = {modulusLength: 4096, namedCurve: 'secp256k1', publicKeyEncoding: {type: 'spki', format: 'pem'}, privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}) => {
+    const getKeyPair = (type = "ec", options = {
+                                modulusLength: 4096, 
+                                namedCurve: 'secp256k1', 
+                                publicKeyEncoding: {type: 'spki', format: 'pem'}, 
+                                privateKeyEncoding: {type: 'pkcs8', format: 'pem'}}) => {
         return {publicKey, privateKey} = crypto.generateKeyPairSync(type, options)
     }
     
@@ -112,11 +116,10 @@ describe('Node Module for Cryptographic Key Utilities in JavaScript', () => {
     })
     describe('PEM EC key Pair', () => {
         it('Generating key pair ...', () => {
-            // this._privateKey = new cryptoKeys('create', {type:'ec', namedCurve:'P-256K'});
-            // this._privateKey.encrypt('top secret')
-            const {publicKey, privateKey} = getKeyPair()
-            this._privateKey = new cryptoKeys('pem', privateKey);
-            this._publicKey = cryptoKeys.getPublicKey(privateKey)
+            this._privateKey = new cryptoKeys('create', {type:'ec', namedCurve:'P-256K'});
+            //this._publicKey = new cryptoKeys('jwk', this._privateKey.export('jwk', {outputPublic: true}) )
+            this._publicKey = cryptoKeys.getPublicKey(this._privateKey)
+            this._privateKey.encrypt('top secret')
             assert.isObject(this._privateKey,'private key is not a object');
             assert.isTrue(this._publicKey instanceof cryptoKeys, 'public key is not a cryptoKeys object');
         })

@@ -10,6 +10,10 @@ for (var i=0; i<process.argv.length; i++) {
     if (process.argv[i] === __filename) init = i
     if (i > init) argFiles.push(path.join(testDir,process.argv[i]))
 }
+
+//force testing one file
+//argFiles = ["test/keys.js"]
+
 if (argFiles.length > 0) console.info('Selected files to test: ' + argFiles.join(', '))
 else console.info('Will test files from dir: ' + testDir)
 

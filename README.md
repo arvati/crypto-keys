@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/arvati/crypto-keys/branch/master/graph/badge.svg)](https://codecov.io/gh/arvati/crypto-keys)
+
 # Crypto-keys
  > Node Module for Cryptographic Key Utilities in JavaScript'
 
