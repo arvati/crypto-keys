@@ -62,7 +62,7 @@
     "example": "./example"
   },
   "nyc": {
-    "all": true,
+    "all": false,
     "check-coverage": false,
     "reporter": ["lcovonly", "text-summary"],
     "report-dir": "./coverage",
