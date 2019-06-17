@@ -2,6 +2,8 @@ const assert = require('chai').assert;
 const crypto = require('crypto');
 const cryptoKeys = require('../lib')
 
+//console.log(crypto.getCurves())
+
 describe('Test ', () => {
     var self_ = this;
     
