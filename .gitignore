@@ -70,3 +70,6 @@ typings/
 _site
 docs/_site
 Gemfile.lock
+
+# Pycharm
+.idea
